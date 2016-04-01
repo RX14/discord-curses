@@ -1,0 +1,15 @@
+{
+  "name": "discord-curses",
+  "version": "0.1.0",
+  "description": "Curses discord client",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RX14 <chris@rx14.co.uk>",
+  "license": "MIT",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "discord.js": "^6.1.0"
+  }
+}
