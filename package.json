@@ -4,7 +4,8 @@
   "description": "Curses discord client",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --harmony --harmony_default_parameters main.js"
   },
   "author": "RX14 <chris@rx14.co.uk>",
   "license": "MIT",
