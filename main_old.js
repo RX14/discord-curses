@@ -2,10 +2,10 @@
 
 const Discord = require("discord.js")
 const Blessed = require("blessed")
+const util = require("util")
 
 const screen = Blessed.screen({
-    smartCSR: true,
-    dockBorders: true
+    smartCSR: true
 })
 
 screen.title = "Discord"
