@@ -145,7 +145,12 @@ function addMessage(message) {
     }
     let senderPad = ("               " + sender).slice(-15)
 
-    let content = message.cleanContent + " " + message.embeds.join(', ')
+    let content = message.cleanContent
+    if (message.attachments.length > 0) {
+        if (content.length > 0) content += " "
+        content += `[attchments: ${message.attachments.map(a => a.url).join(", ")} ]`
+    }
+
     chat.add(senderPad + "│" + content)
 }
 function selectChannel(name) {
