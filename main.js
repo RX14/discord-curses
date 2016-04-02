@@ -112,8 +112,13 @@ function updateChannelList() {
     channelList.setItems(channelStrings)
 }
 function addMessage(message) {
-    let userPad = ("               " + message.author.name).slice(-15)
-    chat.add(userPad + "│" + message.content)
+    let sender = message.author.name
+    if (message.author.name.length > 15) {
+        sender = message.author.name.substring(0, 15);
+    }
+    let userPad = ("               " + sender).slice(-15)
+    let content = message.cleanContent + " " + message.embeds.join(', ')
+    chat.add(userPad + "│" + content)
 }
 function selectChannel(name) {
     let channel = client.channels.get("name", name)
