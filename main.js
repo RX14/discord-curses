@@ -88,12 +88,39 @@ const messagebox = Blessed.message({
     border: 'line'
 })
 
-screen.key(['q', 'C-c'], () => process.exit(0))
+screen.key(['q', 'C-c'], quit)
 
 const client = new Discord.Client();
 
 const collapsedServers = []
 let currentChannel = null
+
+function quit() {
+    var question = Blessed.question({
+        parent: screen,
+        top: 'center',
+        left: 'center',
+        width: 'half',
+        height: 'shrink',
+
+        keys: true,
+        tags: true,
+
+        border: 'line',
+        label: ' Quitting '
+    })
+
+    question.ask('Are you sure you want to quit?', (err, value) => {
+        if (value) {
+            client.logout()
+            screen.destroy()
+            process.exit(0)
+        } else {
+            question.destroy()
+            screen.render()
+        }
+    })
+}
 
 function updateChannelList() {
     let channelStrings = []
