@@ -160,7 +160,7 @@ export class Display {
 
         if (state.channelListFocused != prevState.channelListFocused) {
             if (state.channelListFocused) {
-                logger.debug("Focusing channeList")
+                logger.debug("Focusing channelList")
                 this.channelList.focus()
             } else {
                 logger.debug("Focusing chatInput")
@@ -250,7 +250,9 @@ export class Display {
         //TODO: disgusting
         this.chatInput.on("submit", () => {
             let text = this.chatInput.value
-            discord.sendMessage(store.getState().currentChannelId, text)
+            if (text.trim().length > 0) {
+                discord.sendMessage(store.getState().currentChannelId, text)
+            }
 
             this.chatInput.clearValue()
             this.chatInput.focus()
