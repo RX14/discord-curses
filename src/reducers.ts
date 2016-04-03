@@ -52,7 +52,10 @@ function log(state: List<string> = List<string>(), action: Action): List<string>
 
             if (message.channel == currentChannelId) {
                 var usernamePad = utils.pad("               ", message.username)
-                return state.push(usernamePad + "│" + message.content)
+                message.content.split(/\n/).forEach(line => {
+                    state = state.push(usernamePad + "│" + line)
+                })
+                return state
             } else {
                 return state
             }
