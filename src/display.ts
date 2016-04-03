@@ -78,9 +78,7 @@ export class Display {
 
             bottom: 0,
             right: 0,
-            height: 1,
-
-            inputOnFocus: true
+            height: 1
         })
 
         this.chatInputSeperator = Blessed.line({
@@ -165,6 +163,7 @@ export class Display {
             } else {
                 logger.debug("Focusing chatInput")
                 this.chatInput.focus()
+                this.chatInput.input()
             }
         }
 
@@ -243,7 +242,7 @@ export class Display {
             this.channelList.enterSelected()
         })
 
-        this.chatInput.on("blur", () => {
+        this.chatInput.key(["escape"], () => {
             store.dispatch(actions.focusChannelList())
         })
 
@@ -255,7 +254,7 @@ export class Display {
             }
 
             this.chatInput.clearValue()
-            this.chatInput.focus()
+            this.chatInput.input()
             this.screen.render()
         })
 
