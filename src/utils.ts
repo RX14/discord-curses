@@ -16,3 +16,7 @@ export function pad(pad: string, string: string) {
     }
     return (pad + string).slice(-pad.length)
 }
+
+export function padLeft(pad: string, string: string) {
+    return (string + pad).substring(0, pad.length)
+}

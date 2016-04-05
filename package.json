@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "blessed": "^0.1.81",
+    "dateformat": "^1.0.12",
     "discord.js": "^6.1.0",
     "immutable": "^3.7.6",
     "redux": "^3.3.1",

@@ -44,6 +44,7 @@ export interface Message {
     channel: ChannelId
     username: string
     content: string
+    timestamp: Date
 }
 
 function messageFromDiscord(message): Message {
@@ -58,7 +59,8 @@ function messageFromDiscord(message): Message {
 
         channel: message.channel.id,
         username: message.author.name,
-        content
+        content,
+        timestamp: new Date(message.timestamp)
     }
 }
 

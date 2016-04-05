@@ -1,5 +1,6 @@
 const Blessed = require("blessed")
 const unidecode = require("unidecode")
+const dateFormat = require("dateformat")
 import * as actions from "./actions";
 import {State, LoginState} from "./state";
 import {Store} from "redux";
@@ -14,7 +15,9 @@ interface ChannelServerContainer {
     serverId?: ServerId
 }
 
-const padString = "                    "
+const usernamePadString = "                    "
+
+const dateFormatString = "[hh:MM:sstt]"
 
 export class Display {
     private screen
@@ -132,13 +135,15 @@ export class Display {
             logger.debug("Updating log")
 
             let logs = []
-            let maxLineWidth = this.chat.width - 1 - padString.length
+            let maxLineWidth = this.chat.width - 1 - usernamePadString.length
+            let maxLineWidthWithTimestamp = maxLineWidth - dateFormatString.length
+            let chatPadString = " ".repeat(maxLineWidth)
             state.log.forEach(message => {
-                let usernamePad = utils.pad(padString, `<${unidecode(message.username)}>`)
+                let usernamePad = utils.pad(usernamePadString, `<${unidecode(message.username)}>`)
                 let messageLines: string[] = message.content.split("\n")
 
                 messageLines.forEach(line => {
-                    if (line.length > maxLineWidth) {
+                    if (line.length > maxLineWidthWithTimestamp) {
                         while (true) {
                             // Find index of last space, starting with the last possible character which could fit on the screen.
                             let lastSpace = line.lastIndexOf(" ", maxLineWidth)
@@ -159,19 +164,25 @@ export class Display {
                             }
 
                             // Set the username to be blank, so the username isn't printed multiple times.
-                            usernamePad = padString
+                            usernamePad = usernamePadString
 
                             // If the rest of the message can fit into one line,
-                            if (line.length < maxLineWidth) {
+                            if (line.length < maxLineWidthWithTimestamp) {
+                                // add the timestamp,
+                                let timestampLine = utils.padLeft(chatPadString, line).substring(0, maxLineWidthWithTimestamp)
+                                timestampLine += dateFormat(message.timestamp, dateFormatString)
+
                                 // append it to the log,
-                                logs.push(`${usernamePad}│${line}`)
+                                logs.push(`${usernamePad}│${timestampLine}`)
 
                                 // and break the loop.
                                 break
                             }
                         }
                     } else {
-                        logs.push(`${usernamePad}│${line}`)
+                        let timestampLine = utils.padLeft(chatPadString, line).substring(0, maxLineWidthWithTimestamp)
+                        timestampLine += dateFormat(message.timestamp, dateFormatString)
+                        logs.push(`${usernamePad}│${timestampLine}`)
                     }
                 })
 
