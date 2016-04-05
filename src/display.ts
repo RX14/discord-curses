@@ -143,14 +143,20 @@ export class Display {
                             // Find index of last space, starting with the last possible character which could fit on the screen.
                             let lastSpace = line.lastIndexOf(" ", maxLineWidth)
 
-                            // If there is no space, split at the maxLineWidth.
-                            if (lastSpace == -1) lastSpace = maxLineWidth - 1
+                            // If we found a space
+                            if (lastSpace > 0) {
+                                // Cut the line at found space, and append to log.
+                                logs.push(`${usernamePad}│${line.substring(0, lastSpace)}`)
 
-                            // Cut the line at found space, and append to log.
-                            logs.push(`${usernamePad}│${line.substring(0, lastSpace)}`)
+                                // Remove the bit we just appended from the string, plus the space.
+                                line = line.substring(lastSpace + 1)
+                            } else { // else
+                                // Cut the line at max width, and append to log.
+                                logs.push(`${usernamePad}│${line.substring(0, maxLineWidth)}`)
 
-                            // Remove the bit we just appended from the string, plus the space.
-                            line = line.substring(lastSpace + 1)
+                                // Remove the bit we just appended from the string
+                                line = line.substring(maxLineWidth)
+                            }
 
                             // Set the username to be blank, so the username isn't printed multiple times.
                             usernamePad = padString
