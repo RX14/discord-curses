@@ -14,6 +14,8 @@ interface ChannelServerContainer {
     serverId?: ServerId
 }
 
+const padString = "                    "
+
 export class Display {
     private screen
     private channelList
@@ -125,12 +127,49 @@ export class Display {
             this.chatInputSeperator.width = chatWidth
         }
 
-        if (state.log != prevState.log) {
+        if (state.log != prevState.log
+            || state.screenWidth != prevState.screenWidth) {
             logger.debug("Updating log")
-            let logs = state.log.flatMap(message => {
-                let usernamePad = utils.pad("                    ", `<${unidecode(message.username)}>`)
-                return message.content.split(/\n/).map(line => `${usernamePad}│${line}`)
-            }).toJS()
+
+            let logs = []
+            let maxLineWidth = this.chat.width - 1 - padString.length
+            state.log.forEach(message => {
+                let usernamePad = utils.pad(padString, `<${unidecode(message.username)}>`)
+                let messageLines: string[] = message.content.split("\n")
+
+                messageLines.forEach(line => {
+                    if (line.length > maxLineWidth) {
+                        while (true) {
+                            // Find index of last space, starting with the last possible character which could fit on the screen.
+                            let lastSpace = line.lastIndexOf(" ", maxLineWidth)
+
+                            // If there is no space, split at the maxLineWidth.
+                            if (lastSpace == -1) lastSpace = maxLineWidth - 1
+
+                            // Cut the line at found space, and append to log.
+                            logs.push(`${usernamePad}│${line.substring(0, lastSpace)}`)
+
+                            // Remove the bit we just appended from the string, plus the space.
+                            line = line.substring(lastSpace + 1)
+
+                            // Set the username to be blank, so the username isn't printed multiple times.
+                            usernamePad = padString
+
+                            // If the rest of the message can fit into one line,
+                            if (line.length < maxLineWidth) {
+                                // append it to the log,
+                                logs.push(`${usernamePad}│${line}`)
+
+                                // and break the loop.
+                                break
+                            }
+                        }
+                    } else {
+                        logs.push(`${usernamePad}│${line}`)
+                    }
+                })
+
+            })
 
             this.chat.setItems(logs)
         }
