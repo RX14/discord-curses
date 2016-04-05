@@ -136,11 +136,6 @@ export class Display {
         }
 
         this.chat.setScroll((this.chat.getScrollHeight() - this.chat.height) - state.scrolledUpLines)
-        logger.debug("SCROLL", {
-            scrollHeight: this.chat.getScrollHeight(),
-            height: this.chat.height,
-            childBase: this.chat.childBase,
-        })
 
         if (state.serversChannelsRelation != prevState.serversChannelsRelation
             || state.collapsedServers != prevState.collapsedServers) {
