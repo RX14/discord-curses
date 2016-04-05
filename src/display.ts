@@ -77,6 +77,7 @@ export class Display {
 
             scrollable: true,
             alwaysScroll: true,
+            tags: true,
 
             bottom: 2,
             right: 0
@@ -139,8 +140,9 @@ export class Display {
             let maxLineWidthWithTimestamp = maxLineWidth - dateFormatString.length
             let chatPadString = " ".repeat(maxLineWidth)
             state.log.forEach(message => {
-                let usernamePad = utils.pad(usernamePadString, `<${unidecode(message.username)}>`)
+                let usernamePad = utils.pad(usernamePadString, `<${Blessed.escape(unidecode(message.username))}>`)
                 let messageLines: string[] = message.content.split("\n")
+                let timestamp = `{grey-fg}${dateFormat(message.timestamp, dateFormatString)}{/}`
 
                 messageLines.forEach(line => {
                     if (line.length > maxLineWidthWithTimestamp) {
@@ -168,21 +170,17 @@ export class Display {
 
                             // If the rest of the message can fit into one line,
                             if (line.length < maxLineWidthWithTimestamp) {
-                                // add the timestamp,
-                                let timestampLine = utils.padLeft(chatPadString, line).substring(0, maxLineWidthWithTimestamp)
-                                timestampLine += dateFormat(message.timestamp, dateFormatString)
-
                                 // append it to the log,
-                                logs.push(`${usernamePad}│${timestampLine}`)
+                                let trimmedLine = utils.padLeft(chatPadString, line).substring(0, maxLineWidthWithTimestamp)
+                                logs.push(`${usernamePad}│${Blessed.escape(trimmedLine)}${timestamp}`)
 
                                 // and break the loop.
                                 break
                             }
                         }
                     } else {
-                        let timestampLine = utils.padLeft(chatPadString, line).substring(0, maxLineWidthWithTimestamp)
-                        timestampLine += dateFormat(message.timestamp, dateFormatString)
-                        logs.push(`${usernamePad}│${timestampLine}`)
+                        let trimmedLine = utils.padLeft(chatPadString, line).substring(0, maxLineWidthWithTimestamp)
+                        logs.push(`${usernamePad}│${Blessed.escape(trimmedLine)}${timestamp}`)
                     }
                 })
 
