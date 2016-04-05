@@ -1,6 +1,7 @@
 import * as winston from "winston"
-import {ActionType} from "./actions"
-import {State, LoginState} from "./state";
+import {ActionType, Action} from "./actions"
+import {State, LoginState} from "./state"
+import {Store} from "redux";
 
 export const logger = new (winston.Logger)({
     transports: [
@@ -32,10 +33,17 @@ function debugState(state: State) {
     }
 }
 
-export const reduxMiddleware = store => next => action => {
-    // logger.silly("dispatching", {type: ActionType[action.type], action})
-    logger.debug("dispatching", {type: ActionType[action.type]})
+export const reduxMiddleware = (store: Store<State>) => next => (action: Action) => {
+    // Hack to reduce spam from other channels
+    let showMessage = true
+    if (action.type == ActionType.CHAT_MESSAGE) {
+        if (action.payload.message.channel != store.getState().currentChannelId) {
+            showMessage = false
+        }
+    }
+
+    if (showMessage) logger.debug("dispatching", {type: ActionType[action.type], action})
     let result = next(action)
-    logger.silly("next state", debugState(store.getState()))
+    if (showMessage && !store.getState().corked) logger.debug("next state", debugState(store.getState()))
     return result
 }
