@@ -117,9 +117,14 @@ export class DiscordClient {
         this.prevState = state
     }
 
-    sendMessage(channelId: ChannelId, message: string) {
+    sendMessage(channelId: ChannelId, message: string, retries: number = 3) {
         this.client.sendMessage(channelId, message)
-            .catch(err => logger.error("Error sending message:", {err}))
+            .catch(err => {
+                logger.error("Error sending message:", { err })
+                if (retries > 0) {
+                    this.sendMessage(channelId, message, retries - 1)
+                }
+            })
     }
 
     logout() {
