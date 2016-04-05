@@ -43,7 +43,7 @@ function log(state: List<Message> = List<Message>(), action: Action): List<Messa
             // Clear log
             return List<Message>()
         case ActionType.LOG_LINE:
-            return state.push(Object.freeze({id: -1, channel: -1, username: "***", content: action.payload.log}))
+            return state.push(Object.freeze({id: -1, channel: -1, username: "***", content: action.payload.log, timestamp: new Date()}))
         case ActionType.CHAT_MESSAGE:
             return state.push(action.payload.message)
         default:
