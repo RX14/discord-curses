@@ -52,10 +52,6 @@ export class Display {
             scrollable: true,
 
             style: {
-                item: {
-                    fg: 'white',
-                    bg: 'black'
-                },
                 selected: {
                     fg: 'black',
                     bg: 'white'
