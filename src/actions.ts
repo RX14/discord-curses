@@ -13,7 +13,8 @@ export enum ActionType {
     RESIZE_SCREEN,
     FINISH_LOG_LOADING,
     START_LOGIN,
-    LOGGED_IN
+    LOGGED_IN,
+    SCROLL_UP
 }
 
 export interface Action {
@@ -133,5 +134,14 @@ export function loginError(error): Action {
         type: ActionType.LOGGED_IN,
         payload: error,
         error: true
+    }
+}
+
+export function scrollUp(lines: number): Action {
+    return {
+        type: ActionType.SCROLL_UP,
+        payload: {
+            lines: lines
+        }
     }
 }

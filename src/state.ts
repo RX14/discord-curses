@@ -19,6 +19,7 @@ export interface State {
 
     screenHeight: number
     screenWidth: number
+    scrolledUpLines: number
 
     corked: boolean
     channelListFocused: boolean

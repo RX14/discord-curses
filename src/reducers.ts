@@ -92,6 +92,22 @@ function screenWidth(state: number = 0, action: Action): number {
     }
 }
 
+function scrolledUpLines(state: number = 0, action: Action): number {
+    switch (action.type) {
+        case ActionType.CHAT_MESSAGE:
+            // If we're not at the bottom, keep the current position
+            if (state != 0) {
+                return state + 1
+            } else {
+                return state
+            }
+        case ActionType.SCROLL_UP:
+            return Math.max(state + action.payload.lines, 0)
+        default:
+            return state
+    }
+}
+
 function corked(state: boolean = false, action: Action): boolean {
     switch (action.type) {
         case ActionType.CORK:
@@ -172,6 +188,7 @@ export const reducers = combineReducers<State>({
     collapsedServers,
     screenHeight,
     screenWidth,
+    scrolledUpLines,
     corked,
     channelListFocused,
     loadingChannelLogs,

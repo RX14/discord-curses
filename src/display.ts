@@ -71,6 +71,7 @@ export class Display {
             parent: this.screen,
 
             scrollable: true,
+            alwaysScroll: true,
 
             bottom: 2,
             right: 0
@@ -132,8 +133,14 @@ export class Display {
             }).toJS()
 
             this.chat.setItems(logs)
-            this.chat.setScrollPerc(100)
         }
+
+        this.chat.setScroll((this.chat.getScrollHeight() - this.chat.height) - state.scrolledUpLines)
+        logger.debug("SCROLL", {
+            scrollHeight: this.chat.getScrollHeight(),
+            height: this.chat.height,
+            childBase: this.chat.childBase,
+        })
 
         if (state.serversChannelsRelation != prevState.serversChannelsRelation
             || state.collapsedServers != prevState.collapsedServers) {
@@ -225,12 +232,10 @@ export class Display {
         })
 
         this.screen.on('resize', () => {
-            // Ensure chat is always fully scrolled
+            // Use setImmediate so event handlers finish before we send the resize
             setImmediate(() => {
-                this.chat.setScrollPerc(100)
-                this.screen.render()
+                store.dispatch(actions.resizeScreen(this.screen.width, this.screen.height))
             })
-            store.dispatch(actions.resizeScreen(this.screen.width, this.screen.height))
         })
         this.screen.emit('resize')
 
@@ -257,6 +262,29 @@ export class Display {
 
         this.chatInput.key(["escape"], () => {
             store.dispatch(actions.focusChannelList())
+        })
+
+        this.chatInput.key(["pageup", "pagedown", "C-up", "C-down"], (_, key) => {
+            switch (key.name) {
+                case "pageup":
+                    if (this.chat.childBase > 0) {
+                        store.dispatch(actions.scrollUp(this.chat.height - 2))
+                    }
+                    break
+                case "pagedown":
+                    store.dispatch(actions.scrollUp(-(this.chat.height - 2)))
+                    break
+                case "up":
+                    if (key.ctrl && this.chat.childBase > 0) {
+                        store.dispatch(actions.scrollUp(1))
+                    }
+                    break
+                case "down":
+                    if (key.ctrl) {
+                        store.dispatch(actions.scrollUp(-1))
+                    }
+                    break
+            }
         })
 
         //TODO: disgusting
