@@ -119,6 +119,7 @@ export class DiscordClient {
 
     sendMessage(channelId: ChannelId, message: string) {
         this.client.sendMessage(channelId, message)
+            .catch(err => logger.error("Error sending message:", {err}))
     }
 
     logout() {
