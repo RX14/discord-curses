@@ -1,11 +1,10 @@
-import {reducers} from "./src/reducers"
-import {createStore} from "redux"
+import {reducers, filterChatMessageMiddleware} from "./src/reducers"
+import {createStore, applyMiddleware} from "redux"
 import {Display} from "./src/display"
 import {DiscordClient} from "./src/discord"
 import {reduxMiddleware as logMiddleware} from "./src/log"
-import {applyMiddleware} from "redux";
 
-export const store = createStore(reducers, applyMiddleware(logMiddleware))
+export const store = createStore(reducers, applyMiddleware(filterChatMessageMiddleware, logMiddleware))
 
 const display = new Display()
 export const discord = new DiscordClient()

@@ -34,16 +34,8 @@ function debugState(state: State) {
 }
 
 export const reduxMiddleware = (store: Store<State>) => next => (action: Action) => {
-    // Hack to reduce spam from other channels
-    let showMessage = true
-    if (action.type == ActionType.CHAT_MESSAGE) {
-        if (action.payload.message.channel != store.getState().currentChannelId) {
-            showMessage = false
-        }
-    }
-
-    if (showMessage) logger.debug("dispatching", {type: ActionType[action.type], action})
+    logger.debug("dispatching", {type: ActionType[action.type], action})
     let result = next(action)
-    if (showMessage && !store.getState().corked) logger.debug("next state", debugState(store.getState()))
+    if (!store.getState().corked) logger.debug("next state", debugState(store.getState()))
     return result
 }

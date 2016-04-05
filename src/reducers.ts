@@ -3,7 +3,7 @@ import {combineReducers} from "redux";
 import {ActionType, Action} from "./actions";
 import {State, LoginState} from "./state"
 import {Server, ServerId, Channel, ChannelId, Message} from "./discord"
-import {store} from "../main"
+import {Store} from "redux";
 
 function servers(state: Map<number, Server> = Map<number, Server>(), action: Action): Map<number, Server> {
     switch (action.type) {
@@ -45,15 +45,7 @@ function log(state: List<Message> = List<Message>(), action: Action): List<Messa
         case ActionType.LOG_LINE:
             return state.push(Object.freeze({id: -1, channel: -1, username: "***", content: action.payload.log}))
         case ActionType.CHAT_MESSAGE:
-            // Calculate log string and append
-            let message: Message = action.payload.message
-            let currentChannelId = store.getState().currentChannelId
-
-            if (message.channel == currentChannelId) {
-                return state.push(message)
-            } else {
-                return state
-            }
+            return state.push(action.payload.message)
         default:
             return state
     }
@@ -158,6 +150,16 @@ function loginError(state: string = "", action: Action): string {
             }
         default:
             return state
+    }
+}
+
+export const filterChatMessageMiddleware = (store: Store<State>) => next => (action: Action) => {
+    if (action.type == ActionType.CHAT_MESSAGE) {
+        if(action.payload.message.channel == store.getState().currentChannelId) {
+            return next(action)
+        }
+    } else {
+        return next(action)
     }
 }
 
