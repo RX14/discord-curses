@@ -1,3 +1,4 @@
+require('source-map-support').install()
 import {reducers, filterChatMessageMiddleware} from "./src/reducers"
 import {createStore, applyMiddleware} from "redux"
 import {Display} from "./src/display"
