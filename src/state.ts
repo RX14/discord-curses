@@ -1,5 +1,5 @@
 import {Map, List} from "immutable";
-import {Server, ServerId, Channel, ChannelId} from "./discord"
+import {Server, ServerId, Channel, ChannelId, Message} from "./discord"
 
 export enum LoginState {
     LOGGING_IN,
@@ -12,7 +12,7 @@ export interface State {
     channels: Map<number, Channel>
     serversChannelsRelation: Map<ServerId, List<ChannelId>>
 
-    log: List<string>
+    log: List<Message>
 
     currentChannelId: ChannelId
     collapsedServers: List<ServerId>

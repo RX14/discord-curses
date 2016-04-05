@@ -1,10 +1,12 @@
 const Blessed = require("blessed")
+const unidecode = require("unidecode")
 import * as actions from "./actions";
 import {State, LoginState} from "./state";
 import {Store} from "redux";
 import {ServerId, ChannelId} from "./discord";
 import {logger} from "./log"
 import {discord} from "../main"
+import * as utils from "./utils"
 
 interface ChannelServerContainer {
     isServer: boolean
@@ -123,7 +125,12 @@ export class Display {
 
         if (state.log != prevState.log) {
             logger.debug("Updating log")
-            this.chat.setItems(state.log.toArray())
+            let logs = state.log.flatMap(message => {
+                let usernamePad = utils.pad("                    ", `<${unidecode(message.username)}>`)
+                return message.content.split(/\n/).map(line => `${usernamePad}│${line}`)
+            }).toJS()
+
+            this.chat.setItems(logs)
             this.chat.setScrollPerc(100)
         }
 

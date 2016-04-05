@@ -4,7 +4,6 @@ import {ActionType, Action} from "./actions";
 import {State, LoginState} from "./state"
 import {Server, ServerId, Channel, ChannelId, Message} from "./discord"
 import {store} from "../main"
-import * as utils from "./utils"
 
 function servers(state: Map<number, Server> = Map<number, Server>(), action: Action): Map<number, Server> {
     switch (action.type) {
@@ -38,24 +37,20 @@ function serversChannelsRelation(state: Map<ServerId, List<ChannelId>> = Map<Ser
     }
 }
 
-function log(state: List<string> = List<string>(), action: Action): List<string> {
+function log(state: List<Message> = List<Message>(), action: Action): List<Message> {
     switch (action.type) {
         case ActionType.CHANGE_CHANNEL:
             // Clear log
-            return List<string>()
+            return List<Message>()
         case ActionType.LOG_LINE:
-            return state.push(action.payload.log)
+            return state.push(Object.freeze({id: -1, channel: -1, username: "***", content: action.payload.log}))
         case ActionType.CHAT_MESSAGE:
             // Calculate log string and append
             let message: Message = action.payload.message
             let currentChannelId = store.getState().currentChannelId
 
             if (message.channel == currentChannelId) {
-                var usernamePad = utils.pad("               ", message.username)
-                message.content.split(/\n/).forEach(line => {
-                    state = state.push(usernamePad + "│" + line)
-                })
-                return state
+                return state.push(message)
             } else {
                 return state
             }

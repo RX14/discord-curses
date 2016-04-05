@@ -37,7 +37,10 @@ function channelFromDiscord(channel): Channel {
     })
 }
 
+export type MessageId = any
 export interface Message {
+    id: MessageId
+
     channel: ChannelId
     username: string
     content: string
@@ -51,6 +54,8 @@ function messageFromDiscord(message): Message {
     }
 
     return {
+        id: message.id,
+
         channel: message.channel.id,
         username: message.author.name,
         content
