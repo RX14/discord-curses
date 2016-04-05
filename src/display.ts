@@ -224,6 +224,11 @@ export class Display {
         })
 
         this.screen.on('resize', () => {
+            // Ensure chat is always fully scrolled
+            setImmediate(() => {
+                this.chat.setScrollPerc(100)
+                this.screen.render()
+            })
             store.dispatch(actions.resizeScreen(this.screen.width, this.screen.height))
         })
         this.screen.emit('resize')
