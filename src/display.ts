@@ -30,7 +30,8 @@ export class Display {
         this.screen = Blessed.screen({
             smartCSR: true,
             dockBorders: true,
-            title: "Discord"
+            title: "Discord",
+            fullUnicode: true
         })
 
         this.channelList = Blessed.list({
